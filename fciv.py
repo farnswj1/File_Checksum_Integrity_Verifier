@@ -34,6 +34,7 @@ class FCIV(object):
         font = ("Courier New", 20, "bold")
 
         # Select File Button
+        self.__filename = None
         self.__select_file_button = tk.Button(
             self.__window,
             text="Select a file:",
@@ -50,7 +51,7 @@ class FCIV(object):
         )
         self.__filename_label.place(relx=0.5, y=125, anchor=tk.CENTER)
 
-        # Filename Label
+        # Select Hash Label
         self.__select_hash_label = tk.Label(
             self.__window,
             text="Select a hash function:",
@@ -95,13 +96,14 @@ class FCIV(object):
 
     # Allow the user to select the file and save the filename
     def __select_file(self):
-        self.__filename_label.config(text=basename(askopenfilename(title="Select a file")))
+        self.__filename = askopenfilename(title="Select a file")
+        self.__filename_label.config(text=basename(self.__filename))
     
 
     # Compute the checksum of the file
-    def __compute_checksum(self, hash_function):
-        # Read the file (in bytes) and encrypt the contents inside
-        with open("sample.txt", "rb") as f:
+    def __compute_checksum(self, filename, hash_function):
+        # Read the file (in bytes) and encrypt the contents
+        with open(filename, "rb") as f:
             # Feed the algorithm one chunk at a time
             while chunk := f.read(4096):
                 hash_function.update(chunk)
@@ -112,18 +114,17 @@ class FCIV(object):
     
     # Get the checksum using the specified hash function
     def __get_checksum(self):
-        # Get the selected file and hash function
-        selected_file = self.__filename_label["text"]
+        # Get the selected hash function
         selected_hash = self.__selected_hash.get()
 
         # Clear the checksum textbox before adding text to it
         self.__checksum.delete("1.0", tk.END)
 
         # If both entries are valid, print the checksum. Otherwise, print a message
-        if selected_file and selected_hash in self.__hashes["values"]:
+        if self.__filename and selected_hash in self.__hashes["values"]:
             self.__checksum.insert(
                 tk.INSERT,
-                self.__compute_checksum(getattr(hashlib, selected_hash)())
+                self.__compute_checksum(self.__filename, getattr(hashlib, selected_hash)())
             )
         else:
             self.__checksum.insert(tk.INSERT, "Select a file and hash function.")
