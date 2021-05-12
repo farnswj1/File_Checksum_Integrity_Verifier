@@ -101,7 +101,8 @@ class FCIV(object):
     
 
     # Compute the checksum of the file
-    def __compute_checksum(self, filename, hash_function):
+    @staticmethod
+    def __compute_checksum(filename, hash_function):
         # Read the file (in bytes) and encrypt the contents
         with open(filename, "rb") as f:
             # Feed the algorithm one chunk at a time
