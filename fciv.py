@@ -3,12 +3,12 @@ Justin Farnsworth
 File Checksum Integrity Verifier (FCIV)
 November 22, 2020
 
-This is a simple GUI that allows the user to get the checksum 
+This is a simple GUI that allows the user to get the checksum
 of a file. The user can also specify which hash function to use.
 
-NOTE: Not all hash functions are included in this program. This is 
-largely because some functions are no longer supported. Also, some 
-functions, notably the SHAKE series, require additional arguments. 
+NOTE: Not all hash functions are included in this program. This is
+largely because some functions are no longer supported. Also, some
+functions, notably the SHAKE series, require additional arguments.
 For simplicity and convenience, those algorithms are not included.
 '''
 
@@ -21,7 +21,7 @@ from os.path import basename
 
 
 # FCIV window class
-class FCIV(object):
+class FCIV:
     # Constructor
     def __init__(self):
         # Window
@@ -90,15 +90,14 @@ class FCIV(object):
         )
         self.__checksum.place(relx=0.5, y=450, width=520, anchor=tk.N)
 
-        # Run the main loop
+    # Run the main loop
+    def run(self):
         self.__window.mainloop()
-    
 
     # Allow the user to select the file and save the filename
     def __select_file(self):
         self.__filename = askopenfilename(title="Select a file")
         self.__filename_label.config(text=basename(self.__filename))
-    
 
     # Compute the checksum of the file
     @staticmethod
@@ -108,11 +107,10 @@ class FCIV(object):
             # Feed the algorithm one chunk at a time
             while chunk := f.read(4096):
                 hash_function.update(chunk)
-        
+
         # Return the checksum in hexadecimal notation
         return hash_function.hexdigest().upper()
 
-    
     # Get the checksum using the specified hash function
     def __get_checksum(self):
         # Get the selected hash function
@@ -131,6 +129,7 @@ class FCIV(object):
             self.__checksum.insert(tk.INSERT, "Select a file and hash function.")
 
 
-# Run the FCIV program if the script is ran directly 
+# Run the FCIV program if the script is ran directly
 if __name__ == "__main__":
-    FCIV()
+    app = FCIV()
+    app.run()
